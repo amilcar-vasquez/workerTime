@@ -2,19 +2,21 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"sync"
 )
 
-func worker(id int) {
-	fmt.Printf("Worker %d starting\n", id)
-	time.Sleep(2 * time.Second) //Replace this
-	fmt.Printf("Worker %d finished\n", id)
+func worker(wg *sync.WaitGroup) {
+	defer wg.Done()
+	fmt.Println("Worker started")
+	fmt.Println("Worker done")
 }
 
 func main() {
+	var wg sync.WaitGroup
 	for i := 1; i <= 3; i++ {
-		go worker(i)
+		wg.Add(1)
+		go worker(&wg)
 	}
-	time.Sleep(3 * time.Second)
-	fmt.Println("All workers done") //Replace this
+	wg.Wait()
+	fmt.Println("All workers done")
 }
